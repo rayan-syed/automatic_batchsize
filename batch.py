@@ -106,7 +106,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Find optimal batch size
-starting_batch_size = 64
+starting_batch_size = 1
 batch_size = optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size)
 print(f"Optimal batch size: {batch_size}")
 
