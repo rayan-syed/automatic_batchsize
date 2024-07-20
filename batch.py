@@ -1,5 +1,5 @@
 import os
-import random
+import sys
 from PIL import Image
 import torch
 import torch.nn as nn
@@ -71,9 +71,10 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
 
     while True:
         print(batch_size)
+        sys.stdout.flush()
         try:
             # Attempt train
-            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
             train(dataloader, model, criterion, optimizer, epochs=1) 
 
             lower_bound = batch_size  # If successful, set lower bound to current batch_size
@@ -110,6 +111,6 @@ batch_size = optimal_batch_size(dataset, model, criterion, optimizer, starting_b
 print(f"Optimal batch size: {batch_size}")
 
 # Train
-dataloader = DataLoader(dataset, batch_size=optimal_batch_size, shuffle=True)
+dataloader = DataLoader(dataset, batch_size=optimal_batch_size, shuffle=True, num_workers=4)
 train(dataloader, model, criterion, optimizer, epochs=10)
 print("Finished Training")
