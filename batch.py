@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
+import datetime
 
 # Dataset Class
 class CustomDataset(Dataset):
@@ -71,7 +72,7 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
     lower_bound, upper_bound = 0, None
 
     while True:
-        print(f"Trying to run epoch with batch size: {batch_size}")
+        print(f"Trying to run epoch with batch size: {batch_size} @ {datetime.datetime.now()}")
         sys.stdout.flush()
         try:
             # Attempt train
@@ -86,6 +87,7 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
 
         except RuntimeError as e:
             if 'memory' in str(e):
+                print("Memory error")
                 upper_bound = batch_size  # If fail, set upper bound to current batch size
                 batch_size = (lower_bound + upper_bound) // 2
                 if upper_bound - lower_bound <= 1:  
@@ -107,11 +109,11 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Find optimal batch size
-starting_batch_size = 512
+starting_batch_size = 760
 batch_size = optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size)
 print(f"Optimal batch size: {batch_size}")
 
 # Train
-dataloader = DataLoader(dataset, batch_size=optimal_batch_size, shuffle=True, num_workers=4)
+dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
 train(dataloader, model, criterion, optimizer, epochs=10)
 print("Finished Training")
