@@ -12,7 +12,7 @@ class CustomDataset(Dataset):
     def __init__(self, image_dir, transform=None):
         self.image_dir = image_dir
         self.transform = transform
-        self.image_files = [f for f in os.listdir(image_dir) if f.endswith('.png')]
+        self.image_files = os.listdir(image_dir)
 
     def __len__(self):
         return len(self.image_files)
@@ -38,7 +38,7 @@ class SimpleCNN(nn.Module):
             for i in range(num_conv_layers)
         ])
         
-        self.fc1 = nn.Linear(16 * 1000 * 1000, 10)  
+        self.fc1 = nn.Linear(16 * 256 * 256, 10)  
 
     def forward(self, x):
         for conv_layer in self.conv_layers:
@@ -62,6 +62,7 @@ def train(dataloader, model, criterion, optimizer, epochs):
             optimizer.step()
             running_loss += loss.item()
         print(f"Epoch complete")
+        sys.stdout.flush()
 
 
 # Function to find optimal batch size
@@ -70,7 +71,7 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
     lower_bound, upper_bound = 0, None
 
     while True:
-        print(batch_size)
+        print(f"Trying to run epoch with batch size: {batch_size}")
         sys.stdout.flush()
         try:
             # Attempt train
@@ -84,7 +85,7 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
                 batch_size = (lower_bound + upper_bound) // 2    # Binary search algorithm to find optimal batch size
 
         except RuntimeError as e:
-            if 'CUDA out of memory' in str(e):
+            if 'memory' in str(e):
                 upper_bound = batch_size  # If fail, set upper bound to current batch size
                 batch_size = (lower_bound + upper_bound) // 2
                 if upper_bound - lower_bound <= 1:  
@@ -93,7 +94,7 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
                 raise e     # Real error
 
 # Transform to normalize the data
-transform = transforms.Compose([transforms.ToTensor(), transforms.Resize((1000, 1000))])
+transform = transforms.Compose([transforms.ToTensor(), transforms.Resize((256, 256))])
 
 # Download and load the training data
 # Create dataset and data loader
@@ -106,7 +107,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Find optimal batch size
-starting_batch_size = 1
+starting_batch_size = 512
 batch_size = optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size)
 print(f"Optimal batch size: {batch_size}")
 
