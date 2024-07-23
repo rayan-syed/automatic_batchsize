@@ -8,7 +8,7 @@ if __name__ == "__main__":
         print("CUDA is available on this system.")
         print(f"CUDA version: {torch.version.cuda}")
         print(f"CUDNN version: {torch.backends.cudnn.version()}")
-        print(f"GPU count: {torch.cuda.device_count()}\n")
+        print(f"GPU count: {torch.cuda.device_count()}")
         for device in range(torch.cuda.device_count()):
             print(f"\nDevice {device}: {torch.cuda.get_device_name(device)}")
             print(f"Total memory: {torch.cuda.get_device_properties(device).total_memory / (1024 ** 3):.2f} GB")
