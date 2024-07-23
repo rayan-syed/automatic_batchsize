@@ -2,14 +2,17 @@
 
 # Specify the project and resource allocation
 #$ -P tianlabdl
-#$ -l h_rt=48:00:00
+#$ -l h_rt=100:00:00
 #$ -j y
 #$ -l gpus=1
-#$ -l gpu_c=3.5
+#$ -l gpu_memory=12G
 
 # Load the required Python module and activate the virtual environment
 module load python3/3.10.12
 source .venv/bin/activate
+
+# See GPU info
+python gpu_test.py
 
 # Run python file
 python batch.py
