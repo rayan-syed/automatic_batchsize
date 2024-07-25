@@ -83,7 +83,10 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
             if upper_bound is None:  # If doubling has not failed yet, double batch size again
                 batch_size *= 2
             else:  
+                prev = batch_size
                 batch_size = (lower_bound + upper_bound) // 2    # Binary search algorithm to find optimal batch size
+                if prev == batch_size:
+                    return batch_size           # If batch size doesn't change then return final batch size
 
         except RuntimeError as e:
             if 'memory' in str(e):
@@ -109,11 +112,11 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Find optimal batch size
-starting_batch_size = 760
+starting_batch_size = 1
 batch_size = optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size)
 print(f"Optimal batch size: {batch_size}")
 
 # Train
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-train(dataloader, model, criterion, optimizer, epochs=10)
-print("Finished Training")
+train(dataloader, model, criterion, optimizer, epochs=5)
+print("\nFinished Training")
