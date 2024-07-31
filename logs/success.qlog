@@ -1,0 +1,52 @@
+CUDA is available on this system.
+CUDA version: 12.1
+CUDNN version: 8902
+GPU count: 1
+
+Device 0: Tesla P100-PCIE-12GB
+Total memory: 11.90 GB
+Allocated memory: 0.00 GB
+Cached memory: 0.00 GB
+
+Trying to run epoch with batch size: 64 @ 2024-07-31 16:56:54.795226
+Epoch complete
+Trying to run epoch with batch size: 128 @ 2024-07-31 16:57:01.171866
+Epoch complete
+Trying to run epoch with batch size: 256 @ 2024-07-31 16:57:07.140403
+Epoch complete
+Trying to run epoch with batch size: 512 @ 2024-07-31 16:57:13.110271
+Epoch complete
+Trying to run epoch with batch size: 1024 @ 2024-07-31 16:57:19.598383
+Epoch complete
+Trying to run epoch with batch size: 2048 @ 2024-07-31 16:57:27.390926
+Memory error: CUDA out of memory. Tried to allocate 98.00 MiB. GPU 
+Trying to run epoch with batch size: 1536 @ 2024-07-31 16:57:33.068148
+Epoch complete
+Trying to run epoch with batch size: 1792 @ 2024-07-31 16:57:42.075994
+Epoch complete
+Trying to run epoch with batch size: 1920 @ 2024-07-31 16:57:51.824084
+Memory error: CUDA out of memory. Tried to allocate 92.00 MiB. GPU 
+Trying to run epoch with batch size: 1856 @ 2024-07-31 16:57:56.863529
+Epoch complete
+Trying to run epoch with batch size: 1888 @ 2024-07-31 16:58:06.674650
+Epoch complete
+Trying to run epoch with batch size: 1904 @ 2024-07-31 16:58:16.588328
+Epoch complete
+Trying to run epoch with batch size: 1912 @ 2024-07-31 16:58:26.377985
+Memory error: CUDA out of memory. Tried to allocate 92.00 MiB. GPU 
+Trying to run epoch with batch size: 1908 @ 2024-07-31 16:58:31.481211
+Epoch complete
+Trying to run epoch with batch size: 1910 @ 2024-07-31 16:58:41.312899
+Memory error: CUDA out of memory. Tried to allocate 92.00 MiB. GPU 
+Trying to run epoch with batch size: 1909 @ 2024-07-31 16:58:46.403150
+Memory error: CUDA out of memory. Tried to allocate 92.00 MiB. GPU 
+
+Optimal batch size: 1908
+
+Epoch complete
+Epoch complete
+Epoch complete
+Epoch complete
+Epoch complete
+
+Finished Training

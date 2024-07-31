@@ -29,7 +29,7 @@ class CustomDataset(Dataset):
 
 # Neural network from another project
 class SimpleCNN(nn.Module):
-    def __init__(self, num_conv_layers=60, input_channels=3):
+    def __init__(self, num_conv_layers=100, input_channels=3):
         super(SimpleCNN, self).__init__()
         self.layers = num_conv_layers
         
@@ -39,7 +39,7 @@ class SimpleCNN(nn.Module):
             for i in range(num_conv_layers)
         ])
         
-        self.fc1 = nn.Linear(16 * 256 * 256, 10)  
+        self.fc1 = nn.Linear(16 * 28 * 28, 10)  
 
     def forward(self, x):
         for conv_layer in self.conv_layers:
@@ -55,9 +55,10 @@ def train(dataloader, model, criterion, optimizer, epochs):
     for epoch in range(epochs):
         running_loss = 0.0
         for images in dataloader:
+            images = images.cuda(non_blocking=True)
             optimizer.zero_grad()
             outputs = model(images)
-            labels = torch.randint(0, 10, (images.size(0),))    # Fake labels
+            labels = torch.randint(0, 10, (images.size(0),)).cuda(non_blocking=True)    # Fake labels
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
@@ -76,7 +77,7 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
         sys.stdout.flush()
         try:
             # Attempt train
-            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
             train(dataloader, model, criterion, optimizer, epochs=1) 
 
             lower_bound = batch_size  # If successful, set lower bound to current batch_size
@@ -89,8 +90,8 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
                     return batch_size           # If batch size doesn't change then return final batch size
 
         except RuntimeError as e:
-            if 'memory' in str(e):
-                print("Memory error")
+            if 'CUDA out of memory' in str(e):
+                print(f"Memory error: {e}")
                 upper_bound = batch_size  # If fail, set upper bound to current batch size
                 batch_size = (lower_bound + upper_bound) // 2
                 if upper_bound - lower_bound <= 1:  
@@ -99,7 +100,7 @@ def optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size
                 raise e     # Real error
 
 # Transform to normalize the data
-transform = transforms.Compose([transforms.ToTensor(), transforms.Resize((256, 256))])
+transform = transforms.Compose([transforms.ToTensor(), transforms.Resize((28, 28))])
 
 # Download and load the training data
 # Create dataset and data loader
@@ -107,14 +108,14 @@ image_dir = './data/3x256x256'  # Path to your image directory
 dataset = CustomDataset(image_dir=image_dir, transform=transform)
 
 # Initialize the model, define the loss function and the optimizer
-model = SimpleCNN()
+model = SimpleCNN().cuda()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Find optimal batch size
-starting_batch_size = 1
+starting_batch_size = 64
 batch_size = optimal_batch_size(dataset, model, criterion, optimizer, starting_batch_size)
-print(f"Optimal batch size: {batch_size}")
+print(f"\nOptimal batch size: {batch_size}\n")
 
 # Train
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
