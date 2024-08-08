@@ -1,7 +1,7 @@
 # Automatic Batch Size Function
 This repository aims to create a function that can be used to find the optimal batch size to use before training a model. The other files in this repository allow for the script to be run on the [Boston University's Shared Computing Cluster (SCC)](https://www.bu.edu/tech/support/research/computing-resources/scc/), the batch system of which is based on the [Sun Grid Engine](https://gridscheduler.sourceforge.net/) (SGE) scheduler.
 
-## The optimal_batch_size function:
+## The optimal_batch_size function
 Within batch.py the following function can be seen:
 ```
 # Function to find optimal batch size
@@ -55,7 +55,7 @@ def train(dataloader, model, criterion, optimizer, epochs):
         print(f"Epoch complete")
 ```
 
-## Example of function usage:
+## Example of function usage
 A log reflecting a successful usage of this function is provided at `./logs/success.qlog`
 I had starting_batch_size = 64 for this example. Here is a little snippet of the log that reflects what happens upon encountering a GPU memory error:
 ```
