@@ -54,3 +54,18 @@ def train(dataloader, model, criterion, optimizer, epochs):
             running_loss += loss.item()
         print(f"Epoch complete")
 ```
+
+## Example of function usage:
+A log reflecting a successful usage of this function is provided at `./logs/success.qlog`
+I had starting_batch_size = 64 for this example. Here is a little snippet of the log that reflects what happens upon encountering a GPU memory error:
+```
+Trying to run epoch with batch size: 1024 @ 2024-07-31 16:57:19.598383
+Epoch complete
+Trying to run epoch with batch size: 2048 @ 2024-07-31 16:57:27.390926
+Memory error: CUDA out of memory. Tried to allocate 98.00 MiB. GPU 
+Trying to run epoch with batch size: 1536 @ 2024-07-31 16:57:33.068148
+Epoch complete
+```
+A batch size of 1024 worked for this model, but 2048 was too high, resulting in the next batch size tested being 1024+(2048-1024)/2 = 1536. 
+
+Hopefully, this function can be seamlessly integrated into your models and help with optimizing training. If you have any further questions or spot any errors, please contact at me at rsyed@bu.edu.
